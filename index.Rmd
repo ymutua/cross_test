@@ -39,7 +39,6 @@ Column {.sidebar data-width=600}
 ```{r map}
 leaflet::leaflet(sd) %>% 
 leaflet::addProviderTiles("Esri.WorldImagery") %>%
-  leaflet::addMiniMap(position = "bottomright") %>%
   setView(37.726396, -2.219735, zoom = 16) %>%  
   leaflet::addAwesomeMarkers(
     popup = ~paste0(
