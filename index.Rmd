@@ -87,7 +87,7 @@ Row {data-width=600 data-height=600}
 ```{r}
 datatable(
   sd,
-  filter = "top",
+  filter = list(position = 'top', clear = FALSE),
   extensions = "Scroller",
   rownames = FALSE,
   style = "bootstrap",
