@@ -1,0 +1,106 @@
+---
+title: "Soil Sampling Locations - Kiboko"
+author: "John Mutua"
+output:
+  flexdashboard::flex_dashboard:
+    theme: paper
+    social: menu
+    source_code: embed
+    favicon: img/map.png
+---
+
+```{r setup, include=FALSE}
+# packages
+
+library(crosstalk)
+library(dplyr)
+library(leaflet)
+library(DT)
+library(tidyverse)
+
+# data
+
+set.seed(1337)
+
+df <- read_csv(paste0("./data/", "Mapping Data.csv"))
+
+# shared data object
+
+sd <- SharedData$new(df)
+```
+
+
+Column {data-width=600}
+-------------------------------------
+    
+### Sampling Locations
+    
+```{r map}
+leaflet::leaflet(sd) %>% 
+leaflet::addProviderTiles("Esri.WorldImagery") %>%
+  leaflet::addMiniMap(position = "bottomright") %>%
+  setView(37.726396, -2.219735, zoom = 16) %>%  
+  leaflet::addAwesomeMarkers(
+    popup = ~paste0(
+    "Field name: ", df$`Field Name`, "", 
+    "PH: ", df$pH, "",
+    "EC: ", df$`*EC (uS/cm)`,
+    "P: ", df$`*P ppm (Olsen)`,
+    "K: ", df$`K ppm`,
+    "Ca: ", df$`Ca ppm`),
+    icon = awesomeIcons(
+      library = "ion",
+      icon = "ion-android-phone-portrait",
+      iconColor = "white",
+      markerColor = "lightred"
+    )
+  )
+
+
+# 
+# leaflet::leaflet(sd) %>%
+#   addProviderTiles("Esri.WorldImagery") %>%
+#   addMiniMap(position = "bottomright") %>%
+#   setView(37.726396, -2.219735, zoom = 16) %>%
+#   
+#   addMarkers(
+#     popup = popup <- paste0("Field Name: ", df$`Field Name`,
+#                             "PH", df$pH),
+#     group = "Sampling points") %>% 
+#   
+#   addLayersControl(overlayGroups = c("Sampling points"), options = layersControlOptions(collapsed = FALSE))
+```
+    
+Column {data-width=400}
+-------------------------------------
+
+### Filter by depth
+
+
+```{r filters}
+crosstalk::bscols(
+  filter_checkbox(
+    id = "Depth",
+    label = "Depth",
+    sharedData = sd,
+    group = ~Depth,
+    multipleClasses(TRUE),
+    inline = TRUE
+  )
+)
+```
+
+### Datatable
+    
+```{r}
+datatable(
+  sd,
+  filter = "top",
+  extensions = "Scroller",
+  rownames = FALSE,
+  style = "bootstrap",
+  class = "compact",
+  width = "100%",
+  options = list(deferRender = TRUE, scrollY = 300, scroller = TRUE))
+
+```
