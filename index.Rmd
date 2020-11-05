@@ -7,6 +7,7 @@ output:
     social: menu
     source_code: embed
     favicon: img/map.png
+    orientation: rows
 ---
 
 ```{r setup, include=FALSE}
@@ -30,7 +31,7 @@ sd <- SharedData$new(df)
 ```
 
 
-Column {data-width=600}
+Column {.sidebar data-width=600}
 -------------------------------------
     
 ### Sampling Locations
@@ -54,24 +55,12 @@ leaflet::addProviderTiles("Esri.WorldImagery") %>%
       iconColor = "white",
       markerColor = "lightred"
     )
-  )
+  , group = "Sampling points") %>% 
+  addLayersControl(overlayGroups = c("Sampling points"), options = layersControlOptions(collapsed = FALSE))
 
-
-# 
-# leaflet::leaflet(sd) %>%
-#   addProviderTiles("Esri.WorldImagery") %>%
-#   addMiniMap(position = "bottomright") %>%
-#   setView(37.726396, -2.219735, zoom = 16) %>%
-#   
-#   addMarkers(
-#     popup = popup <- paste0("Field Name: ", df$`Field Name`,
-#                             "PH", df$pH),
-#     group = "Sampling points") %>% 
-#   
-#   addLayersControl(overlayGroups = c("Sampling points"), options = layersControlOptions(collapsed = FALSE))
 ```
     
-Column {data-width=400}
+Row {data-height=150}
 -------------------------------------
 
 ### Filter by depth
@@ -89,6 +78,10 @@ crosstalk::bscols(
   )
 )
 ```
+
+
+Row {data-width=600 data-height=600}
+-------------------------------------
 
 ### Datatable
     
